@@ -1,24 +1,173 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
 body {
   @apply bg-gray-50 text-gray-900;
+  font-family: "Merriweather", serif;
   height: 100%;
   overflow: hidden;
+  background-color: #f6efe7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Trirong", serif;
+}
+
+/* Global H1 styling */
+h1 {
+  font-family: "Trirong", serif;
+  line-height: 1.1em;
+}
+
+button,
+.btn,
+a[role="button"],
+a.btn {
+  font-family: "Open Sans", var(--font-sans);
+}
+
+/* Global arrow-after effect for anchors acting as buttons */
+a[role="button"] {
+  position: relative;
+  white-space: nowrap;
+
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 14px;
+  font-weight: 700;
+
+  background-color: #6d5a27;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #6d5a27;
+  border-radius: 0;
+
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+a[role="button"].button__outline{
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 14px;
+  font-weight: 700;
+
+  background-color: #FFFFFF00;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #FFFFFF;
+  border-radius: 0;
+
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+              0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+a[role="button"].button__outline--dark, button{
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 14px;
+  font-weight: 700;
+
+  background-color: #FFFFFF00;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #000000;
+  border-radius: 0;
+
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+              0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+a[role="button"]:hover, button:hover {
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+a[role="button"].button__outline--dark:hover, button.button__outline--dark:hover {
+  background-color: #ffffff00;
+  border-color: #000000;
+}
+
+a[role="button"]::after, button::after {
+  display: inline-block;
+  position: absolute;
+  margin-left: -1em;
+  opacity: 0;
+  transition: all 0.3s ease;
+  line-height: 1.55em;
+}
+
+a[role="button"]:hover::after, button:hover::after {
+  opacity: 1;
+  margin-left: 0.3em;
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-4px);
+  }
+
+  40% {
+    transform: translateX(4px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(3px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .animate-shake {
