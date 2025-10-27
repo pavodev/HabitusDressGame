@@ -37,7 +37,8 @@ a.btn {
 }
 
 /* Global arrow-after effect for anchors acting as buttons */
-a[role="button"] {
+a[role="button"],
+button:not(.arrow) {
   position: relative;
   white-space: nowrap;
 
@@ -67,7 +68,8 @@ a[role="button"] {
   cursor: pointer;
 }
 
-a[role="button"].button__outline{
+a[role="button"].button__outline,
+button.button__outline {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   padding-top: 0.75rem;
@@ -90,10 +92,11 @@ a[role="button"].button__outline{
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-              0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-a[role="button"].button__outline--dark, button{
+a[role="button"].button__outline--dark,
+button {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   padding-top: 0.75rem;
@@ -116,21 +119,24 @@ a[role="button"].button__outline--dark, button{
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-              0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-a[role="button"]:hover, button:hover {
+a[role="button"]:hover,
+button:hover {
   color: #000000;
   background-color: #ffffff;
   border-color: #ffffff;
 }
 
-a[role="button"].button__outline--dark:hover, button.button__outline--dark:hover {
+a[role="button"].button__outline--dark:hover,
+button.button__outline--dark:hover {
   background-color: #ffffff00;
   border-color: #000000;
 }
 
-a[role="button"]::after, button::after {
+a[role="button"]::after,
+button::after {
   display: inline-block;
   position: absolute;
   margin-left: -1em;
@@ -139,7 +145,8 @@ a[role="button"]::after, button::after {
   line-height: 1.55em;
 }
 
-a[role="button"]:hover::after, button:hover::after {
+a[role="button"]:hover::after,
+button:hover::after {
   opacity: 1;
   margin-left: 0.3em;
 }
