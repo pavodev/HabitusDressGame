@@ -13,9 +13,11 @@
     "@gsap/react": "^2.1.2",
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
+    "intlayer": "^7.0.1",
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-intlayer": "^7.0.1",
     "react-router": "^7.7.1"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "tailwindcss": "^4.1.4",
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
+    "vite-intlayer": "^7.0.1",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
