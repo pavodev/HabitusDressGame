@@ -243,6 +243,8 @@ export default function DressGuesser() {
   const badgeRef = useRef<HTMLDivElement | null>(null);
   const confettiLayerRef = useRef<HTMLDivElement | null>(null);
   const mcqCardRef = useRef<HTMLDivElement | null>(null);
+  const mainRef = useRef<HTMLElement | null>(null);
+  const questionInfoRef = useRef<HTMLDivElement | null>(null);
 
   // Swipe refs & functions
   const touchStartX = useRef(0);
@@ -498,6 +500,21 @@ export default function DressGuesser() {
     }
   }
 
+  function pulse(el: HTMLElement | null) {
+    if (!el) return;
+    gsap.killTweensOf(el);
+    gsap.set(el, { willChange: "box-shadow,border-color" });
+
+    gsap.timeline({
+      onComplete: () => {               // 👈 block body, no return value
+        gsap.set(el, { willChange: "auto" });
+      },
+    })
+      .to(el, { borderColor: "#6d5a27", duration: 0.18, ease: "power2.out" })
+      .to(el, { boxShadow: "0 0 0 6px rgba(109,90,39,0.16)", duration: 0.18 }, "<")
+      .to(el, { boxShadow: "0 0 0 0 rgba(109,90,39,0)", borderColor: "#e5e7eb", duration: 0.5, ease: "power2.inOut" });
+  }
+
   const totalQuestions = questions.length;
   const currentQ = questions[currentQuestion];
   const isDressQ = currentQ?.kind === "dress";
@@ -550,6 +567,24 @@ export default function DressGuesser() {
       setMcqSelected(new Set());
     }
   }, [currentQ]);
+
+  useEffect(() => {
+    // smooth scroll the container to top
+    const scroller = mainRef.current;
+    if (scroller && "scrollTo" in scroller) {
+      scroller.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    console.log("scrolled!");
+    // pulse the relevant card after the scroll starts
+    const isMcq = questions[currentQuestion]?.kind === "mcq";
+    const el = isMcq ? mcqCardRef.current : questionInfoRef.current;
+
+    const id = window.setTimeout(() => pulse(el), 120);
+    return () => window.clearTimeout(id);
+  }, [currentQuestion, questions]);
 
   function setsEqual<T>(a: Set<T>, b: Set<T>) {
     if (a.size !== b.size) return false;
@@ -683,7 +718,7 @@ export default function DressGuesser() {
 
   if (isLoading) {
     return (
-      <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+      <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
         <h1 className="text-[50px] font-semibold mb-4 text-center text-[#333]">{t('appTitleAlt')}</h1>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -696,7 +731,7 @@ export default function DressGuesser() {
 
   if (hasAlreadyWon) {
     return (
-      <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+      <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
         <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
             {t('appTitle')}
@@ -731,7 +766,7 @@ export default function DressGuesser() {
   }
 
   return (
-    <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+    <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
       <div aria-live="polite" className="sr-only">{liveMsg}</div>
 
       <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
@@ -758,7 +793,7 @@ export default function DressGuesser() {
           <p className="text-xs sm:text-sm text-gray-500 mb-3">{t('questionXofY', { x: currentQuestion + 1, y: totalQuestions })}</p>
           <p className="text-xs sm:text-sm text-green-600 mb-3 font-medium">{t('correctCount', { n: correctlyGuessed.size + mcqCorrect })}</p>
           <div className="flex-1 space-y-3 sm:space-y-4">
-            <div className="px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-200 bg-blue-50 text-gray-800 shadow-sm">
+            <div ref={questionInfoRef} className="px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-200 bg-blue-50 text-gray-800 shadow-sm">
               {isDressQ ? (
                 <>
                   <h3 className="font-semibold text-base sm:text-lg mb-1">{target.name}</h3>
@@ -910,7 +945,7 @@ export default function DressGuesser() {
                 )}
               </div>
 
-              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[en(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
+              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[env(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
                 {!quizComplete && !earnedDiscount && (
                   <button className="text-xs sm:text-sm after:content-['✓'] disabled:opacity-50 disabled:pointer-events-none" onClick={confirmPick} disabled={answering || quizComplete}>
                     {t('confirm')}
