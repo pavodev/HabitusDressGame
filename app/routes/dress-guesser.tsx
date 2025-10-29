@@ -24,7 +24,7 @@ const MESSAGES = {
     alreadyWon: "Hai già completato il quiz e ottenuto il tuo sconto!",
     showAtDesk: "Mostra questo risultato al banco della mostra per ottenere lo sconto!",
     instrTitle: "Istruzioni",
-    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) Il quiz è composto da <strong>{{numberOfQuestions}} domande</strong>: ogni domanda mostra una descrizione dell'abito.</li><li>2) Usando <strong>le frecce</strong> puoi sfogliare gli abiti: usa il pulsante <strong>\"Conferma scelta\"</strong> per selezionarne uno.</li><li>3) Maggiore è il numero di abiti indovinati, maggiore sarà lo sconto che potrai ottenere!</li></ul>",
+    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) Il quiz è composto da <strong>{{numberOfQuestions}} domande</strong>: Ci sono domande a scelta multipla o domande in cui devi indovinare l'abito descritto.</li><li></br>2) Usando <strong>le frecce</strong> puoi sfogliare gli abiti: usa il pulsante <strong>\"Conferma scelta\"</strong> per selezionarne uno.</li><li></br>3) Maggiore è il numero di risposte corrette, maggiore sarà lo sconto che potrai ottenere!</li></ul>",
     startQuiz: "Inizia il quiz",
     guessedSummary: "Risposte corrette: <span class=\"font-medium\">{{a}} / {{b}}</span>",
     discount50: "Ottimo lavoro! Hai ottenuto uno sconto del 50%!",
@@ -33,7 +33,7 @@ const MESSAGES = {
     correctLive: "Corretto!",
     wrongLive: "Sbagliato!",
     selectAll: "Seleziona tutte le risposte corrette",
-    submit: "Invia risposta",
+    submit: "Conferma scelta",
     dressPrompt: "Trova l'abito corrispondente tra quelli disponibili",
     question: "Domanda",
   },
@@ -52,7 +52,7 @@ const MESSAGES = {
     alreadyWon: "You already completed the quiz and got your discount!",
     showAtDesk: "Show this result at the exhibition desk to redeem the discount!",
     instrTitle: "Instructions",
-    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) The quiz is made of <strong>{{numberOfQuestions}} questions</strong>: each question shows a description of a dress.</li><li>2) By using <strong>the arrows</strong> you can swipe through the available dresses: use the <strong>\"Confirm choice\"</strong> button to select one.</li><li>3) The greater the number of correct answers, the bigger the discount you earn!</li></ul>",
+    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) The quiz has <strong>{{numberOfQuestions}} questions</strong>. There are two types of questions</strong>: multiple choice questions or questions where you need to pick the correct dress.</li><li></br>2) By using <strong>the arrows</strong> you can see all the available dresses: use the <strong>\"Confirm choice\"</strong> button to select one.</li><li></br>3) The greater the number of correct answers, the bigger the discount you will earn!</li></ul>",
     startQuiz: "Start the quiz",
     guessedSummary: 'Correct answers: <span class="font-medium">{{a}} out of {{b}}</span>',
     discount50: "Great job! You earned a 50% discount!",
@@ -61,7 +61,7 @@ const MESSAGES = {
     correctLive: "Correct!",
     wrongLive: "Wrong!",
     selectAll: "Select all correct answers",
-    submit: "Submit answer",
+    submit: "Confirm choice",
     dressPrompt: "Find the matching dress among the options",
     question: "Question",
   },
@@ -245,6 +245,7 @@ export default function DressGuesser() {
   const mcqCardRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLElement | null>(null);
   const questionInfoRef = useRef<HTMLDivElement | null>(null);
+  const topAnchorRef = useRef<HTMLDivElement | null>(null);
 
   // Swipe refs & functions
   const touchStartX = useRef(0);
@@ -506,13 +507,28 @@ export default function DressGuesser() {
     gsap.set(el, { willChange: "box-shadow,border-color" });
 
     gsap.timeline({
-      onComplete: () => {               // 👈 block body, no return value
-        gsap.set(el, { willChange: "auto" });
-      },
+      onComplete: () => { gsap.set(el, { willChange: "auto" }); },
     })
-      .to(el, { borderColor: "#6d5a27", duration: 0.18, ease: "power2.out" })
-      .to(el, { boxShadow: "0 0 0 6px rgba(109,90,39,0.16)", duration: 0.18 }, "<")
-      .to(el, { boxShadow: "0 0 0 0 rgba(109,90,39,0)", borderColor: "#e5e7eb", duration: 0.5, ease: "power2.inOut" });
+      .to(el, {
+        borderColor: "#6d5a27",
+        outline: "2px solid #6d5a27",     // <- better visibility on iOS
+        outlineOffset: "2px",
+        duration: 0.2,
+        ease: "power2.out",
+      })
+      .to(el, {
+        boxShadow: "0 0 0 6px rgba(109,90,39,0.16)",
+        duration: 0.2,
+        ease: "power2.out",
+      }, "<")
+      .to(el, {
+        boxShadow: "0 0 0 0 rgba(109,90,39,0)",
+        borderColor: "#e5e7eb",
+        outlineColor: "transparent",
+        outlineOffset: "0px",
+        duration: 0.5,
+        ease: "power2.inOut",
+      });
   }
 
   const totalQuestions = questions.length;
@@ -569,21 +585,34 @@ export default function DressGuesser() {
   }, [currentQ]);
 
   useEffect(() => {
-    // smooth scroll the container to top
-    const scroller = mainRef.current;
-    if (scroller && "scrollTo" in scroller) {
-      scroller.scrollTo({ top: 0, behavior: "smooth" });
+    // scroll to top
+    if (topAnchorRef.current?.scrollIntoView) {
+      topAnchorRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const el = mainRef.current;
+      const scroller = el && el.scrollHeight > el.clientHeight
+        ? el
+        : (document.scrollingElement || document.documentElement);
+      scroller?.scrollTo({ top: 0, behavior: "smooth" as ScrollBehavior });
     }
 
-    console.log("scrolled!");
-    // pulse the relevant card after the scroll starts
     const isMcq = questions[currentQuestion]?.kind === "mcq";
-    const el = isMcq ? mcqCardRef.current : questionInfoRef.current;
+    const targetEl = isMcq ? mcqCardRef.current : questionInfoRef.current;
 
-    const id = window.setTimeout(() => pulse(el), 120);
-    return () => window.clearTimeout(id);
+    let cleanup: (() => void) | undefined;
+
+    if (typeof window !== "undefined" && "onscrollend" in window) {
+      const handler = () => { run(); window.removeEventListener("scrollend", handler); };
+      const run = () => pulse(targetEl);
+      window.addEventListener("scrollend", handler);
+      cleanup = () => window.removeEventListener("scrollend", handler);
+    } else {
+      const run = () => pulse(targetEl);
+      const id: ReturnType<typeof setTimeout> = setTimeout(run, 350);
+      cleanup = () => clearTimeout(id);
+    }
+
+    return cleanup;
   }, [currentQuestion, questions]);
 
   function setsEqual<T>(a: Set<T>, b: Set<T>) {
@@ -719,6 +748,7 @@ export default function DressGuesser() {
   if (isLoading) {
     return (
       <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+        <div ref={topAnchorRef} />
         <h1 className="text-[50px] font-semibold mb-4 text-center text-[#333]">{t('appTitleAlt')}</h1>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -732,6 +762,7 @@ export default function DressGuesser() {
   if (hasAlreadyWon) {
     return (
       <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+        <div ref={topAnchorRef} />
         <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
             {t('appTitle')}
@@ -767,8 +798,8 @@ export default function DressGuesser() {
 
   return (
     <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+      <div ref={topAnchorRef} />
       <div aria-live="polite" className="sr-only">{liveMsg}</div>
-
       <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
           {t('appTitle')}
@@ -790,8 +821,8 @@ export default function DressGuesser() {
               style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
             />
           </div>
-          <p className="text-xs sm:text-sm text-gray-500 mb-3">{t('questionXofY', { x: currentQuestion + 1, y: totalQuestions })}</p>
-          <p className="text-xs sm:text-sm text-green-600 mb-3 font-medium">{t('correctCount', { n: correctlyGuessed.size + mcqCorrect })}</p>
+          <p className="text-sm text-gray-500 mb-3">{t('questionXofY', { x: currentQuestion + 1, y: totalQuestions })}</p>
+          <p className="text-sm text-green-600 mb-3 font-medium">{t('correctCount', { n: correctlyGuessed.size + mcqCorrect })}</p>
           <div className="flex-1 space-y-3 sm:space-y-4">
             <div ref={questionInfoRef} className="px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-200 bg-blue-50 text-gray-800 shadow-sm">
               {isDressQ ? (
@@ -807,7 +838,7 @@ export default function DressGuesser() {
               )}
             </div>
 
-            <div className="text-center text-xs sm:text-sm text-gray-600">
+            <div className="text-center text-sm sm:text-sm text-gray-600">
               <p>{isDressQ ? t('dressPrompt') : t('selectAll')}</p>
             </div>
           </div>
@@ -920,7 +951,7 @@ export default function DressGuesser() {
 
                 <div
                   ref={titleRef}
-                  className="absolute top-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-900 font-medium text-center rounded-b-xl shadow-md pointer-events-none text-xs sm:text-sm md:text-base"
+                  className="absolute top-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-900 font-medium text-center rounded-b-xl shadow-md pointer-events-none text-sm sm:text-sm md:text-base"
                   style={{ transformOrigin: "center center" }}
                 >
                   {current.name}
@@ -928,7 +959,7 @@ export default function DressGuesser() {
                 <img ref={imageRef} src={current.path} alt={current.name} className="absolute inset-0 w-full h-full object-contain will-change-transform will-change-opacity" />
                 <div
                   ref={descRef}
-                  className="absolute bottom-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-700 text-xs sm:text-sm text-center rounded-t-xl shadow-[0_-2px_6px_-1px_rgba(0,0,0,0.1),0_0px_4px_-2px_rgba(0,0,0,0.1)] pointer-events-none"
+                  className="absolute bottom-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-700 text-sm sm:text-sm text-center rounded-t-xl shadow-[0_-2px_6px_-1px_rgba(0,0,0,0.1),0_0px_4px_-2px_rgba(0,0,0,0.1)] pointer-events-none"
                   style={{ transformOrigin: "center center" }}
                 >
                   {current.description}
@@ -945,14 +976,14 @@ export default function DressGuesser() {
                 )}
               </div>
 
-              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[env(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
+              <div className="text-center my-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[env(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
                 {!quizComplete && !earnedDiscount && (
-                  <button className="text-xs sm:text-sm after:content-['✓'] disabled:opacity-50 disabled:pointer-events-none" onClick={confirmPick} disabled={answering || quizComplete}>
+                  <button key={`act-${currentQuestion}-dress`} className="text-sm sm:text-sm after:content-['✓'] disabled:opacity-50 disabled:pointer-events-none" onClick={confirmPick} disabled={answering || quizComplete}>
                     {t('confirm')}
                   </button>
                 )}
                 {shouldAllowRetry && (
-                  <button className="text-xs sm:text-sm" onClick={restartGame}>{t('retry')}</button>
+                  <button className="text-sm sm:text-sm" onClick={restartGame}>{t('retry')}</button>
                 )}
               </div>
             </>
@@ -989,10 +1020,11 @@ export default function DressGuesser() {
                 </div>
               </div>
 
-              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[en(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
+              <div className="text-center my-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[env(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
                 {!quizComplete && !earnedDiscount && (
                   <button
-                    className="text-xs sm:text-sm px-3 py-1.5 rounded-md border disabled:opacity-50 disabled:pointer-events-none"
+                    key={`act-${currentQuestion}-mcq`}
+                    className="text-sm px-3 py-1.5 rounded-md border disabled:opacity-50 disabled:pointer-events-none"
                     onClick={confirmPick}
                     disabled={answering || quizComplete}
                   >
@@ -1000,7 +1032,7 @@ export default function DressGuesser() {
                   </button>
                 )}
                 {shouldAllowRetry && (
-                  <button className="text-xs sm:text-sm" onClick={restartGame}>{t('retry')}</button>
+                  <button className="text-sm" onClick={restartGame}>{t('retry')}</button>
                 )}
               </div>
             </>
@@ -1032,7 +1064,7 @@ export default function DressGuesser() {
                     {t(msgKey)}
                   </p>
                   {discount.percentage > 0 && (
-                    <p className="text-xs sm:text-sm text-gray-500 mt-2">
+                    <p className="text-gray-500 mt-2">
                       {t('showAtDesk')}
                     </p>
                   )}
