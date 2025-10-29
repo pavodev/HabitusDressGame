@@ -9,8 +9,8 @@ html,
 body {
   @apply bg-gray-50 text-gray-900;
   font-family: "Merriweather", serif;
-  height: 100%;
-  overflow: hidden;
+  height: auto;
+  /* overflow: hidden; */
   background-color: #f6efe7;
 }
 

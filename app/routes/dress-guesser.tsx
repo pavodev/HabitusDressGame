@@ -149,18 +149,30 @@ const DRESSES: Dress[] = [
     description: "Oltregiogo appenninico ligure-piemontese.",
     path: "/dresses/abito-inizio-xx-secolo.png",
   },
-  // {
-  //   name: "Santissimo Sacramento",
-  //   locality: "Biasca (1990)",
-  //   description: "Abito della confraternita del Santissimo Sacramento di Biasca (1990)",
-  //   path: "/dresses/santissimo-sacramento-biasca.png",
-  // },
-  // {
-  //   name: "Santissimo Sacramento e Rosario",
-  //   locality: "Balerna",
-  //   description: "Abito della confraternita del Santissimo Sacramento e Rosario di Balerna",
-  //   path: "/dresses/santissimo-sacramento-rosario-balerna.png",
-  // },
+  {
+    name: "Santissimo Sacramento (1990)",
+    locality: "Biasca",
+    description: "Abito della confraternita del Santissimo Sacramento di Biasca (1990)",
+    path: "/dresses/santissimo-sacramento-biasca.png",
+  },
+  {
+    name: "Santissimo Sacramento e Rosario",
+    locality: "Balerna",
+    description: "Abito della confraternita del Santissimo Sacramento e Rosario di Balerna",
+    path: "/dresses/santissimo-sacramento-balerna.png",
+  },
+  {
+    name: "Señor de los Milagros",
+    locality: "Perù",
+    description: "Abito maschile della confraternita del Señor de los Milagros, Perù",
+    path: "/dresses/senor-de-los-milagros-peru.png",
+  },
+  {
+    name: "Arciconfraternita della Buona Morte ed Orazione",
+    locality: "Lugano",
+    description: "Arciconfraternita della Buona Morte ed Orazione sotto il titolo di S. Marta, Lugano",
+    path: "/dresses/confraternita-buona-morte-lugano.png",
+  },
 ];
 
 /**
@@ -660,7 +672,7 @@ export default function DressGuesser() {
 
   if (isLoading) {
     return (
-      <main className="h-screen overflow-y-auto pt-16 p-4 container mx-auto flex flex-col">
+      <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
         <h1 className="text-[50px] font-semibold mb-4 text-center text-[#333]">{t('appTitleAlt')}</h1>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -673,7 +685,7 @@ export default function DressGuesser() {
 
   if (hasAlreadyWon) {
     return (
-      <main className="min-h-screen overflow-y-auto pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 container mx-auto flex flex-col">
+      <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
         <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
             {t('appTitle')}
@@ -708,8 +720,7 @@ export default function DressGuesser() {
   }
 
   return (
-    <main className="min-h-screen overflow-y-auto pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
-      {/* aria-live for correctness feedback */}
+    <main className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
       <div aria-live="polite" className="sr-only">{liveMsg}</div>
 
       <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
@@ -756,7 +767,7 @@ export default function DressGuesser() {
           </div>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
           {isDressQ ? (
             <>
               {/* DRESS question UI (unchanged) */}
@@ -765,7 +776,7 @@ export default function DressGuesser() {
                 className={`relative w-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md ${wrongPick ? "animate-shake" : ""}`}
                 style={{
                   width: "100%",
-                  height: "min(80vh, 512px)", // take up most of the viewport height on mobile
+                  height: "min(85dvh, 640px)",
                   maxWidth: "512px",
                   marginLeft: "auto",
                   marginRight: "auto",
@@ -826,7 +837,7 @@ export default function DressGuesser() {
                 )}
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-2 sm:gap-3 justify-center">
+              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[en(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
                 {!quizComplete && !earnedDiscount && (
                   <button className="text-xs sm:text-sm after:content-['✓'] disabled:opacity-50 disabled:pointer-events-none" onClick={confirmPick} disabled={answering || quizComplete}>
                     {t('confirm')}
@@ -870,7 +881,7 @@ export default function DressGuesser() {
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-2 sm:gap-3 justify-center">
+              <div className="text-center mt-3 z-50 fixed inset-x-0 bottom-0 px-3 pb-[en(safe-area-inset-bottom)] p-4 bg-transparent lg:static lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0lg:sticky lg:bottom-2">
                 {!quizComplete && !earnedDiscount && (
                   <button
                     className="text-xs sm:text-sm px-3 py-1.5 rounded-md border disabled:opacity-50 disabled:pointer-events-none"
@@ -943,7 +954,7 @@ export default function DressGuesser() {
 
       {showInstructions && !hasAlreadyWon && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="instr-title">
-          <div className="bg-white p-6 rounded-xl max-w-md flex flex-col items-center">
+          <div className="bg-white p-6 mx-3 rounded-xl max-w-md flex flex-col items-center">
             <h2 id="instr-title" className="text-xl font-bold mb-3 text-center">{t('instrTitle')}</h2>
             <p dangerouslySetInnerHTML={{ __html: t('instrContent', { numberOfQuestions: totalQuestions }) }}></p>
             <button

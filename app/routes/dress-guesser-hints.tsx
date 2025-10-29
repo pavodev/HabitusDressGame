@@ -284,7 +284,7 @@ export default function DressGuesserHints() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/30 flex mx-4 items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 mx-4 max-w-md w-full shadow-2xl text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold mb-2 text-gray-900">Complimenti!</h2>
