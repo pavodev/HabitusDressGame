@@ -660,7 +660,7 @@ export default function DressGuesser() {
 
   if (isLoading) {
     return (
-      <main className="h-screen overflow-hidden pt-16 p-4 container mx-auto flex flex-col">
+      <main className="h-screen overflow-y-auto pt-16 p-4 container mx-auto flex flex-col">
         <h1 className="text-[50px] font-semibold mb-4 text-center text-[#333]">{t('appTitleAlt')}</h1>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -673,7 +673,7 @@ export default function DressGuesser() {
 
   if (hasAlreadyWon) {
     return (
-      <main className="min-h-screen overflow-hidden pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 container mx-auto flex flex-col">
+      <main className="min-h-screen overflow-y-auto pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 container mx-auto flex flex-col">
         <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
             {t('appTitle')}
@@ -708,7 +708,7 @@ export default function DressGuesser() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
+    <main className="min-h-screen overflow-y-auto pt-8 sm:pt-12 md:pt-16 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
       {/* aria-live for correctness feedback */}
       <div aria-live="polite" className="sr-only">{liveMsg}</div>
 
@@ -724,7 +724,7 @@ export default function DressGuesser() {
           {lang.toUpperCase()}
         </button>
       </div>
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 items-stretch">
+      <div className="flex-1 flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 items-stretch">
         <div className="rounded-xl border border-gray-200 p-4 sm:p-5 bg-white shadow-sm flex flex-col">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{t('quiz')}</h2>
           <div className="w-full h-2 bg-gray-200 rounded-full mb-3 overflow-hidden">
@@ -764,8 +764,9 @@ export default function DressGuesser() {
                 ref={imageCardRef}
                 className={`relative w-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md ${wrongPick ? "animate-shake" : ""}`}
                 style={{
-                  maxWidth: "min(512px, calc(100vh * 512 / 900))",
-                  height: "100%",
+                  width: "100%",
+                  height: "min(80vh, 512px)", // take up most of the viewport height on mobile
+                  maxWidth: "512px",
                   marginLeft: "auto",
                   marginRight: "auto",
                   perspective: "1000px",
