@@ -244,6 +244,17 @@ export default function DressGuesser() {
   const confettiLayerRef = useRef<HTMLDivElement | null>(null);
   const mcqCardRef = useRef<HTMLDivElement | null>(null);
 
+  // Swipe refs & functions
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const touchStartT = useRef(0);
+  const isSwiping = useRef(false);
+
+  function resetImageTransform() {
+    const img = imageRef.current;
+    if (img) gsap.to(img, { x: 0, rotationY: 0, duration: 0.2, ease: "power2.out" });
+  }
+
   // Check if user has already won on component mount
   useEffect(() => {
     const hasWon = localStorage.getItem('dress-quiz-won') === 'true';
@@ -773,7 +784,7 @@ export default function DressGuesser() {
               {/* DRESS question UI (unchanged) */}
               <div
                 ref={imageCardRef}
-                className={`relative w-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md ${wrongPick ? "animate-shake" : ""}`}
+                className={`relative w-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-md ${wrongPick ? "animate-shake" : ""} touch-pan-y select-none`}
                 style={{
                   width: "100%",
                   height: "min(85dvh, 640px)",
@@ -799,6 +810,68 @@ export default function DressGuesser() {
                   const img = imageRef.current;
                   if (!img) return;
                   gsap.to(img, { rotationY: 0, rotationX: 0, duration: 0.3, ease: "power2.out" });
+                }}
+                onTouchStart={(e) => {
+                  if (answering) return;
+                  const t = e.touches[0];
+                  touchStartX.current = t.clientX;
+                  touchStartY.current = t.clientY;
+                  touchStartT.current = performance.now();
+                  isSwiping.current = false;
+                }}
+                onTouchMove={(e) => {
+                  if (answering) return;
+                  const t = e.touches[0];
+                  const dx = t.clientX - touchStartX.current;
+                  const dy = t.clientY - touchStartY.current;
+
+                  // Start horizontal swipe only if clearly more horizontal than vertical
+                  if (!isSwiping.current && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                    isSwiping.current = true;
+                    // prevent page from interpreting as horizontal scroll
+                    e.preventDefault();
+                  }
+
+                  if (isSwiping.current) {
+                    e.preventDefault();
+                    const img = imageRef.current;
+                    if (img) {
+                      // subtle follow
+                      gsap.to(img, {
+                        x: dx * 0.25,
+                        rotationY: gsap.utils.clamp(-8, 8, -dx * 0.08),
+                        duration: 0.1,
+                        ease: "power2.out",
+                      });
+                    }
+                  }
+                }}
+                onTouchEnd={(e) => {
+                  if (answering) return;
+                  const t = e.changedTouches[0];
+                  const dx = t.clientX - touchStartX.current;
+                  const dy = t.clientY - touchStartY.current;
+                  const dt = performance.now() - touchStartT.current;
+
+                  const absDX = Math.abs(dx);
+                  const absDY = Math.abs(dy);
+
+                  // velocity-ish + distance threshold
+                  const strongHorizontal = absDX > absDY && (absDX > 50 || (absDX > 30 && dt < 250));
+
+                  if (isSwiping.current && strongHorizontal) {
+                    // swipe left => next, swipe right => prev
+                    if (dx < 0) {
+                      animateDressChange(+1);
+                    } else {
+                      animateDressChange(-1);
+                    }
+                  } else {
+                    // no swipe -> just reset transform
+                    resetImageTransform();
+                  }
+
+                  isSwiping.current = false;
                 }}
               >
                 {/* overlay for flashes / vignette */}
