@@ -10,7 +10,7 @@ type Locale = 'it' | 'en';
 
 const MESSAGES = {
   it: {
-    appTitle: "Gioco dell'Abito",
+    appTitle: "Quiz dell'Abito",
     appTitleAlt: "Quiz dell'Abito",
     loading: "Caricamento...",
     quiz: "Quiz",
@@ -21,21 +21,22 @@ const MESSAGES = {
     retry: "Riprova",
     close: "Chiudi",
     completed: "Quiz Completato!",
-    alreadyWon: "Hai già completato il quiz e ottenuto il tuo sconto!",
-    showAtDesk: "Mostra questo risultato al banco della mostra per ottenere lo sconto!",
+    alreadyWon: "Hai già completato il quiz e ottenuto il tuo sconto sull'acquisto del libro!",
+    showAtDesk: "Mostra questo risultato al banco della mostra per ottenere uno sconto sull'acquisto del libro!",
     instrTitle: "Istruzioni",
-    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) Il quiz è composto da <strong>{{numberOfQuestions}} domande</strong>: Ci sono domande a scelta multipla o domande in cui devi indovinare l'abito descritto.</li><li></br>2) Usando <strong>le frecce</strong> puoi sfogliare gli abiti: usa il pulsante <strong>\"Conferma scelta\"</strong> per selezionarne uno.</li><li></br>3) Maggiore è il numero di risposte corrette, maggiore sarà lo sconto che potrai ottenere!</li></ul>",
+    instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) Il quiz è composto da <strong>{{numberOfQuestions}} domande</strong>: Ci sono domande a scelta multipla o domande in cui devi indovinare l'abito descritto.</li><li></br>2) Usando <strong>le frecce</strong> puoi sfogliare gli abiti: usa il pulsante <strong>\"Conferma scelta\"</strong> per selezionarne uno.</li><li></br>3) Maggiore è il numero di risposte corrette, maggiore sarà lo sconto sull'acquisto del libro che potrai ottenere!</li></ul>",
     startQuiz: "Inizia il quiz",
     guessedSummary: "Risposte corrette: <span class=\"font-medium\">{{a}} / {{b}}</span>",
-    discount50: "Ottimo lavoro! Hai ottenuto uno sconto del 50%!",
-    discount25: "Bravo! Hai ottenuto uno sconto del 25%!",
-    discount0: "Riprova per ottenere uno sconto!",
+    discount50: "Ottimo lavoro! Hai ottenuto uno sconto del 50% sull'acquisto del libro!",
+    discount25: "Bravo! Hai ottenuto uno sconto del 25% sull'acquisto del libro!",
+    discount0: "Riprova per ottenere uno sconto sull'acquisto del libro!",
     correctLive: "Corretto!",
     wrongLive: "Sbagliato!",
-    selectAll: "Seleziona tutte le risposte corrette",
+    selectAll: "Seleziona tutte le opzioni corrette",
     submit: "Conferma scelta",
     dressPrompt: "Trova l'abito corrispondente tra quelli disponibili",
     question: "Domanda",
+    questionLabel: "Domanda {{x}}",
   },
   en: {
     appTitle: "Dress Quiz",
@@ -49,21 +50,22 @@ const MESSAGES = {
     retry: "Try again",
     close: "Close",
     completed: "Quiz Completed!",
-    alreadyWon: "You already completed the quiz and got your discount!",
-    showAtDesk: "Show this result at the exhibition desk to redeem the discount!",
+    alreadyWon: "You already completed the quiz and got your book discount!",
+    showAtDesk: "Show this result at the exhibition desk to redeem the book discount!",
     instrTitle: "Instructions",
     instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) The quiz has <strong>{{numberOfQuestions}} questions</strong>. There are two types of questions</strong>: multiple choice questions or questions where you need to pick the correct dress.</li><li></br>2) By using <strong>the arrows</strong> you can see all the available dresses: use the <strong>\"Confirm choice\"</strong> button to select one.</li><li></br>3) The greater the number of correct answers, the bigger the discount you will earn!</li></ul>",
     startQuiz: "Start the quiz",
     guessedSummary: 'Correct answers: <span class="font-medium">{{a}} out of {{b}}</span>',
-    discount50: "Great job! You earned a 50% discount!",
-    discount25: "Nice! You earned a 25% discount!",
-    discount0: "Try again to earn a discount!",
+    discount50: "Great job! You earned a 50% book discount!",
+    discount25: "Nice! You earned a 25% book discount!",
+    discount0: "Try again to earn a book discount!",
     correctLive: "Correct!",
     wrongLive: "Wrong!",
-    selectAll: "Select all correct answers",
+    selectAll: "Select all correct options",
     submit: "Confirm choice",
     dressPrompt: "Find the matching dress among the options",
     question: "Question",
+    questionLabel: "Question {{x}}",
   },
 } as const;
 
@@ -102,75 +104,115 @@ function useT(lang: Locale) {
 }
 
 /**
+ * LOCALISATION HELPER
+ */
+
+type Localized = Record<Locale, string>;
+const useL = (lang: Locale) => (v: Localized) => v[lang];
+
+/**
  * DRESSES DATA
  */
 
 type Dress = {
-  name: string;
-  locality: string;
-  description: string;
+  name: Localized;
+  locality: Localized;
+  description: Localized;
   path: string;
 };
 
 const DRESSES: Dress[] = [
+  // {
+  //   name: { it: "San Giacomo", en: "San Giacomo" },
+  //   locality: { it: "Levanto", en: "Levanto" },
+  //   description: {
+  //     it: "Abito tradizionale di San Giacomo, Levanto.",
+  //     en: "Traditional attire of San Giacomo, Levanto."
+  //   },
+  //   path: "/dresses/san-giacomo-levanto.png",
+  // },
   {
-    name: "San Giacomo",
-    locality: "Levanto",
-    description: "Abito tradizionale di San Giacomo, Levanto.",
-    path: "/dresses/san-giacomo-levanto.png",
-  },
-  {
-    name: "San Giovanni",
-    locality: "Serravalle",
-    description: "Abito cerimoniale di San Giovanni, Serravalle.",
+    name: { it: "San Giovanni", en: "San Giovanni" },
+    locality: { it: "Serravalle", en: "Serravalle" },
+    description: {
+      it: "Abito cerimoniale di San Giovanni, Serravalle.",
+      en: "Ceremonial attire of San Giovanni, Serravalle."
+    },
     path: "/dresses/san-giovanni-serravalle.png",
   },
   {
-    name: "San Rocco",
-    locality: "Nuovo Lugano",
-    description: "Abito festivo di San Rocco, Nuovo Lugano.",
+    name: { it: "Nuovo abito festivo di San Rocco", en: "New festive attire of San Rocco" },
+    locality: { it: "Lugano", en: "Lugano" },
+    description: {
+      it: "Abito festivo di San Rocco, Nuovo Lugano.",
+      en: "New festive attire of San Rocco, Lugano."
+    },
     path: "/dresses/san-rocco-nuovo-lugano.png",
   },
   {
-    name: "San Rocco",
-    locality: "Antico Lugano",
-    description: "Abito festivo di San Rocco, Antico Lugano.",
+    name: { it: "Antico abito festivo di San Rocco", en: "Old festive attire of San Rocco" },
+    locality: { it: "Lugano", en: "Lugano" },
+    description: {
+      it: "Antico abito festivo di San Rocco, Lugano.",
+      en: "Old festive attire of San Rocco, Lugano."
+    },
     path: "/dresses/san-rocco-lugano-antico.png",
   },
   {
-    name: "San Rosario",
-    locality: "Val di Blenio",
-    description: "Abito usato dalla confraternita di San Rosario, Val di Blenio.",
+    name: { it: "San Rosario", en: "San Rosario" },
+    locality: { it: "Val di Blenio", en: "Val di Blenio" },
+    description: {
+      it: "Abito usato dalla confraternita di San Rosario, Val di Blenio.",
+      en: "Attire used by the Confraternity of San Rosario, Val di Blenio."
+    },
     path: "/dresses/san-rosario-val-di-blenio.png",
   },
   {
-    name: "Abito di inizio XX secolo",
-    locality: "?",
-    description: "Oltregiogo appenninico ligure-piemontese.",
+    name: { it: "Abito di inizio XX secolo", en: "Early 20th-century attire" },
+    locality: { it: "Fra le regioni Luguria e Pemonte", en: "Area between the regions Luguria e Piedmont Apennines" },
+    description: {
+      it: "Oltregiogo appenninico ligure-piemontese.",
+      en: "Area between Liguria and Piedmont Apennines."
+    },
     path: "/dresses/abito-inizio-xx-secolo.png",
   },
   {
-    name: "Santissimo Sacramento (1990)",
-    locality: "Biasca",
-    description: "Abito della confraternita del Santissimo Sacramento di Biasca (1990)",
+    name: { it: "Santissimo Sacramento (1990)", en: "Santissimo Sacramento (1990)" },
+    locality: { it: "Biasca", en: "Biasca" },
+    description: {
+      it: "Abito della confraternita del Santissimo Sacramento di Biasca (1990).",
+      en: "Attire of the Confraternity of Santissimo Sacramento of Biasca (1990)."
+    },
     path: "/dresses/santissimo-sacramento-biasca.png",
   },
   {
-    name: "Santissimo Sacramento e Rosario",
-    locality: "Balerna",
-    description: "Abito della confraternita del Santissimo Sacramento e Rosario di Balerna",
+    name: { it: "Santissimo Sacramento e Rosario", en: "Santissimo Sacramento e Rosario" },
+    locality: { it: "Balerna", en: "Balerna" },
+    description: {
+      it: "Abito della confraternita del Santissimo Sacramento e Rosario di Balerna.",
+      en: "Attire of the Confraternity of Santissimo Sacramento e Rosario of Balerna."
+    },
     path: "/dresses/santissimo-sacramento-balerna.png",
   },
   {
-    name: "Señor de los Milagros",
-    locality: "Perù",
-    description: "Abito maschile della confraternita del Señor de los Milagros, Perù",
+    name: { it: "Señor de los Milagros", en: "Señor de los Milagros" },
+    locality: { it: "Perù", en: "Peru" },
+    description: {
+      it: "Abito maschile della confraternita del Señor de los Milagros, Perù.",
+      en: "Men’s attire of the Confraternity of Señor de los Milagros, Peru."
+    },
     path: "/dresses/senor-de-los-milagros-peru.png",
   },
   {
-    name: "Arciconfraternita della Buona Morte ed Orazione",
-    locality: "Lugano",
-    description: "Arciconfraternita della Buona Morte ed Orazione sotto il titolo di S. Marta, Lugano",
+    name: {
+      it: "Arciconfraternita della Buona Morte ed Orazione",
+      en: "Archconfraternity of Buona Morte ed Orazione"
+    },
+    locality: { it: "Lugano", en: "Lugano" },
+    description: {
+      it: "Arciconfraternita della Buona Morte ed Orazione sotto il titolo di S. Marta, Lugano.",
+      en: "Archconfraternity of Buona Morte ed Orazione under the title of St. Marta, Lugano."
+    },
     path: "/dresses/confraternita-buona-morte-lugano.png",
   },
 ];
@@ -179,30 +221,132 @@ const DRESSES: Dress[] = [
  * MULTIPLE CHOICES DATA
  */
 
-type McqChoice = { label: string; correct: boolean };
+type McqChoice = { label: Localized; correct: boolean };
 type McqQuestion = {
   kind: "mcq";
-  questionText: string;
+  questionText: Localized;
   choices: McqChoice[];
 };
+
 type DressQuestion = { kind: "dress"; targetIndex: number };
 type Question = DressQuestion | McqQuestion;
 
 const MCQ_QUESTIONS: McqQuestion[] = [
   {
     kind: "mcq",
-    questionText: "What are the main reasons why people dress? Select all correct ones.",
+    questionText: {
+      en: "What are the three main reasons why people dress?",
+      it: "Quali sono le tre principali ragioni per cui le persone si vestono?"
+    },
     choices: [
-      { label: "Modesty", correct: true },
-      { label: "Function", correct: true },
-      { label: "Expression/Communication", correct: true },
-      { label: "Peer pressure", correct: false },
-      { label: "Survival", correct: false },
-      { label: "Fun", correct: false },
-    ],
+      { label: { en: "Modesty", it: "Modestia" }, correct: true },
+      { label: { en: "Function", it: "Funzione" }, correct: true },
+      { label: { en: "Expression/Communication", it: "Espressione/Comunicazione" }, correct: true },
+      { label: { en: "Peer pressure", it: "Pressione dei pari" }, correct: false },
+      { label: { en: "Survival", it: "Sopravvivenza" }, correct: false },
+      { label: { en: "Fun", it: "Divertimento" }, correct: false }
+    ]
   },
-  // Add more MCQs here…
+  {
+    kind: "mcq",
+    questionText: {
+      en: "Which items did the father give to his son in the Parable of the Prodigal Son?",
+      it: "Quali oggetti il padre ha dato al figlio nella parabola del Figliol Prodigo?"
+    },
+    choices: [
+      { label: { en: "Ring", it: "Anello" }, correct: true },
+      { label: { en: "Robe", it: "Tunica" }, correct: true },
+      { label: { en: "Sandals", it: "Sandali" }, correct: true },
+      { label: { en: "Necklace", it: "Collana" }, correct: false },
+      { label: { en: "Crown", it: "Corona" }, correct: false },
+      { label: { en: "Bracelet", it: "Braccialetto" }, correct: false }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "According to the Bible, were Adam and Eve aware of their nakedness in the Garden of Eden?",
+      it: "Secondo la Bibbia, Adamo ed Eva erano consapevoli della loro nudità nel Giardino dell’Eden?"
+    },
+    choices: [
+      { label: { en: "No, never.", it: "No, mai." }, correct: false },
+      { label: { en: "Yes, always.", it: "Sì, sempre." }, correct: false },
+      { label: { en: "Yes, but only after the original sin.", it: "Sì, ma solo dopo il peccato originale." }, correct: true }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "What was the profession of Paul of Tarsus?",
+      it: "Qual era la professione di Paolo di Tarso?"
+    },
+    choices: [
+      { label: { en: "Tentmaker", it: "Tessitore di tende" }, correct: true },
+      { label: { en: "Carpenter", it: "Falegname" }, correct: false },
+      { label: { en: "Shoemaker", it: "Calzolaio" }, correct: false },
+      { label: { en: "Teacher", it: "Insegnante" }, correct: false }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "Which perfumes were given to Jesus by the Three Kings?",
+      it: "Quali profumi sono stati donati a Gesù dai Re Magi?"
+    },
+    choices: [
+      { label: { en: "Frankincense", it: "Incenso" }, correct: true },
+      { label: { en: "Myrrh", it: "Mirra" }, correct: true },
+      { label: { en: "Lavender", it: "Lavanda" }, correct: false },
+      { label: { en: "Rose", it: "Rosa" }, correct: false },
+      { label: { en: "Nard", it: "Nardo" }, correct: false }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "What is the meaning and purpose of the hood in the confraternities’ robes?",
+      it: "Qual è il significato e lo scopo del cappuccio nelle vesti delle confraternite?"
+    },
+    choices: [
+      { label: { en: "To hide the wearer for humility", it: "Nascondere chi lo indossa per umiltà" }, correct: true },
+      { label: { en: "To scare children", it: "Spaventare i bambini" }, correct: false },
+      { label: { en: "To be fashionable", it: "Essere alla moda" }, correct: false },
+      { label: { en: "To protect against the weather", it: "Proteggere dal maltempo" }, correct: false }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "According to Christian tradition, what are the seven Works of Mercy?",
+      it: "Secondo la tradizione cristiana, quali sono le sette Opere di Misericordia?"
+    },
+    choices: [
+      { label: { en: "Feed the hungry", it: "Dare da mangiare agli affamati" }, correct: true },
+      { label: { en: "Give drink to the thirsty", it: "Dare da bere agli assetati" }, correct: true },
+      { label: { en: "Clothe the naked", it: "Vestire chi è nudo" }, correct: true },
+      { label: { en: "Shelter the homeless", it: "Ospitare gli indigenti" }, correct: true },
+      { label: { en: "Visit the sick", it: "Visitare gli ammalati" }, correct: true },
+      { label: { en: "Visit the imprisoned", it: "Visitare i carcerati" }, correct: true },
+      { label: { en: "Bury the dead", it: "Seppellire i morti" }, correct: true },
+      { label: { en: "Teach the rich", it: "Istruire i ricchi" }, correct: false },
+      { label: { en: "Build churches", it: "Costruire chiese" }, correct: false },
+      { label: { en: "Pray silently", it: "Pregare in silenzio" }, correct: false }
+    ]
+  },
+  {
+    kind: "mcq",
+    questionText: {
+      en: "Have the Holy Week Processions of Mendrisio been listed as Intangible Cultural Heritage by UNESCO?",
+      it: "Le processioni della Settimana Santa di Mendrisio sono state inserite nel Patrimonio Culturale Immateriale dell’UNESCO?"
+    },
+    choices: [
+      { label: { en: "Yes, since 2019.", it: "Sì, dal 2019." }, correct: true },
+      { label: { en: "No, they haven’t.", it: "No, non lo sono." }, correct: false },
+      { label: { en: "No, not yet, but the application has been submitted.", it: "No, non ancora, ma la candidatura è stata presentata." }, correct: false }
+    ]
+  }
 ];
+
 
 export function meta() {
   return [
@@ -214,6 +358,7 @@ export function meta() {
 export default function DressGuesser() {
   const [lang, setLang] = useLocale();
   const t = useT(lang);
+  const L = useL(lang);
 
   const [index, setIndex] = useState<number>(0);
   const [targetIndex, setTargetIndex] = useState<number>(0);
@@ -260,7 +405,8 @@ export default function DressGuesser() {
 
   // Check if user has already won on component mount
   useEffect(() => {
-    const hasWon = localStorage.getItem('dress-quiz-won') === 'true';
+    // const hasWon = localStorage.getItem('dress-quiz-won') === 'true';
+    const hasWon = false;
     const savedCode = localStorage.getItem('dress-quiz-code');
     setHasAlreadyWon(hasWon);
     setDiscountCode(savedCode);
@@ -821,19 +967,21 @@ export default function DressGuesser() {
               style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
             />
           </div>
-          <p className="text-sm text-gray-500 mb-3">{t('questionXofY', { x: currentQuestion + 1, y: totalQuestions })}</p>
-          <p className="text-sm text-green-600 mb-3 font-medium">{t('correctCount', { n: correctlyGuessed.size + mcqCorrect })}</p>
+          <p className="text-sm text-green-600 mb-3 font-medium text-end">{t('correctCount', { n: correctlyGuessed.size + mcqCorrect })}</p>
           <div className="flex-1 space-y-3 sm:space-y-4">
             <div ref={questionInfoRef} className="px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-200 bg-blue-50 text-gray-800 shadow-sm">
+              <p className="text-xs sm:text-sm text-gray-500 mb-1">
+                {t('questionXofY', { x: currentQuestion + 1, y: totalQuestions })}
+              </p>
               {isDressQ ? (
                 <>
-                  <h3 className="font-semibold text-base sm:text-lg mb-1">{target.name}</h3>
-                  <p className="text-sm sm:text-base text-gray-600">{target.locality}</p>
+                  <h3 className="font-semibold text-base sm:text-lg mb-1">{L(target.name)}</h3>
+                  <p className="text-sm sm:text-base text-gray-600">{L(target.locality)}</p>
                 </>
               ) : (
                 <>
-                  <h3 className="font-semibold text-base sm:text-lg mb-1">{t('question')}</h3>
-                  <p className="text-sm sm:text-base text-gray-700">{(currentQ as McqQuestion).questionText}</p>
+                  {/* <h3 className="font-semibold text-base sm:text-lg mb-1">{t('question')}</h3> */}
+                  <p className="text-sm sm:text-base text-gray-700">{L((currentQ as McqQuestion).questionText)}</p>
                 </>
               )}
             </div>
@@ -949,21 +1097,21 @@ export default function DressGuesser() {
                 {/* Confetti layer */}
                 <div ref={confettiLayerRef} className="pointer-events-none absolute inset-0 z-10" />
 
-                <div
+                {/* <div
                   ref={titleRef}
                   className="absolute top-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-900 font-medium text-center rounded-b-xl shadow-md pointer-events-none text-sm sm:text-sm md:text-base"
                   style={{ transformOrigin: "center center" }}
                 >
-                  {current.name}
-                </div>
-                <img ref={imageRef} src={current.path} alt={current.name} className="absolute inset-0 w-full h-full object-contain will-change-transform will-change-opacity" />
-                <div
+                  {L(current.name)}
+                </div> */}
+                <img ref={imageRef} src={current.path} alt={L(current.name)} className="absolute inset-0 w-full h-full object-contain will-change-transform will-change-opacity" />
+                {/* <div
                   ref={descRef}
                   className="absolute bottom-0 left-2 sm:left-4 md:left-6 right-2 sm:right-4 md:right-6 z-10 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white/85 backdrop-blur-md text-gray-700 text-sm sm:text-sm text-center rounded-t-xl shadow-[0_-2px_6px_-1px_rgba(0,0,0,0.1),0_0px_4px_-2px_rgba(0,0,0,0.1)] pointer-events-none"
                   style={{ transformOrigin: "center center" }}
                 >
-                  {current.description}
-                </div>
+                  {L(current.description)}
+                </div> */}
                 {(!hasAlreadyWon && (!quizComplete || !earnedDiscount)) && (
                   <button aria-label="Previous dress" className="arrow button__outline--dark absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 cursor-pointer text-sm sm:text-base disabled:opacity-30" onClick={prevDress} disabled={answering}>
                     ◀
@@ -1013,7 +1161,7 @@ export default function DressGuesser() {
                             });
                           }}
                         />
-                        <span className="text-sm text-gray-800">{c.label}</span>
+                        <span className="text-sm text-gray-800">{L(c.label)}</span>
                       </label>
                     );
                   })}
@@ -1044,7 +1192,7 @@ export default function DressGuesser() {
       {showResults && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="results-title">
           <div className="bg-white rounded-xl p-4 sm:p-6 mx-2 sm:mx-4 max-w-md w-full shadow-2xl text-center max-h-[90vh] overflow-y-auto">
-            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🏆</div>
+            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">{calculateDiscount(correctlyGuessed.size + mcqCorrect, totalQuestions).percentage ? '🏆' : '❌'}</div>
             <h2 id="results-title" className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">{t('completed')}</h2>
             <p className="text-sm sm:text-base text-gray-600 mb-4">
               <span
