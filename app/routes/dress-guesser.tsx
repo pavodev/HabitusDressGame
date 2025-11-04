@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
+import { useParams } from "react-router";
 
 
 /**
@@ -13,6 +14,7 @@ const MESSAGES = {
     appTitle: "Quiz dell'Abito",
     appTitleAlt: "Quiz dell'Abito",
     loading: "Caricamento...",
+    changeLanguage: "Change language: ",
     quiz: "Quiz",
     questionXofY: "Domanda {{x}} di {{y}}",
     correctCount: "{{n}} risposte corrette",
@@ -42,6 +44,7 @@ const MESSAGES = {
     appTitle: "Dress Quiz",
     appTitleAlt: "Dress Quiz",
     loading: "Loading...",
+    changeLanguage: "Cambia lingua: ",
     quiz: "Quiz",
     questionXofY: "Question {{x}} of {{y}}",
     correctCount: "{{n}} correct answers",
@@ -75,6 +78,8 @@ function format(template: string, vars: Record<string, string | number> = {}) {
 
 // SSR-safe locale state: default 'it', then read browser preference on client
 function useLocale(): [Locale, (l: Locale) => void] {
+  const { lang: routeLang } = useParams<{ lang?: string }>();
+
   const [lang, setLang] = useState<Locale>(() => {
     // Run once at init so first render matches stored preference
     if (typeof window !== 'undefined') {
@@ -87,6 +92,15 @@ function useLocale(): [Locale, (l: Locale) => void] {
     // SSR fallback
     return 'it';
   });
+
+  useEffect(() => {
+    if (routeLang === "it" || routeLang === "en") {
+      // Override app language from the URL and persist
+      setLang(routeLang);
+      if (typeof window !== "undefined") localStorage.setItem("lang", routeLang);
+    }
+    // If routeLang is undefined or invalid, do nothing: fallback to your current logic.
+  }, [routeLang, setLang]);
 
   // Persist on change
   useEffect(() => {
@@ -909,17 +923,17 @@ export default function DressGuesser() {
     return (
       <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
         <div ref={topAnchorRef} />
-        <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
+        <div className="flex flex-col-reverse items-center justify-center gap-3 mb-3 sm:mb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
             {t('appTitle')}
           </h1>
-          <button
-            className="px-2 py-1 text-xs border rounded"
-            onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
-            aria-label="Change language"
-          >
-            {lang.toUpperCase()}
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <p className="text-center text-sm sm:text-sm text-gray-600">{t('changeLanguage')}</p>
+            <button
+              className="button__lang py-1 text-xl border rounded flex items-center justify-center"
+              onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+              aria-label={t('changeLanguage')}
+            >{lang === 'it' ? '🇬🇧' : '🇮🇹'}</button></div>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-white rounded-xl p-4 sm:p-6 md:p-8 mx-2 sm:mx-4 max-w-md w-full shadow-2xl text-center">
@@ -946,17 +960,17 @@ export default function DressGuesser() {
     <main ref={mainRef} className="min-h-[100dvh] overflow-y-auto [-webkit-overflow-scrolling:touch] pt-8 sm:pt-12 md:pt-16 pb-20 lg:pb-6 p-3 sm:p-4 md:p-6 container mx-auto flex flex-col">
       <div ref={topAnchorRef} />
       <div aria-live="polite" className="sr-only">{liveMsg}</div>
-      <div className="flex items-center justify-center gap-3 mb-3 sm:mb-4">
+      <div className="flex items-center justify-center flex-col-reverse gap-3 mb-3 sm:mb-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[50px] font-semibold text-[#333]">
           {t('appTitle')}
         </h1>
-        <button
-          className="px-2 py-1 text-xs border rounded"
-          onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
-          aria-label="Change language"
-        >
-          {lang.toUpperCase()}
-        </button>
+        <div className="flex items-center justify-center gap-3">
+          <p className="text-center text-sm sm:text-sm text-gray-600">{t('changeLanguage')}</p>
+          <button
+            className="button__lang py-1 text-xl border rounded flex items-center justify-center"
+            onClick={() => setLang(lang === 'it' ? 'en' : 'it')}
+            aria-label={t('changeLanguage')}
+          >{lang === 'it' ? '🇬🇧' : '🇮🇹'}</button></div>
       </div>
       <div className="flex-1 flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6 items-stretch">
         <div className="rounded-xl border border-gray-200 p-4 sm:p-5 bg-white shadow-sm flex flex-col">

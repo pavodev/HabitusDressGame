@@ -155,6 +155,19 @@ button:hover::after {
   margin-left: 0.3em;
 }
 
+.button__lang {
+  padding-left: .75rem !important;
+  padding-right: .55rem !important;
+  padding-top: .5rem !important;
+  padding-bottom: .5rem !important;
+  background-color: white !important;
+  font-size: 20px !important;
+  border: none !important;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
 @keyframes shake {
   0% {
     transform: translateX(0);

@@ -18,22 +18,43 @@ export function Welcome() {
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6">
           <div className="flex flex-col items-center text-center gap-6">
             <h1 className="text-[50px] sm:text-[100px] font-semibold tracking-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-              Scopri le Tradizioni dell’Abito
+              Welcome!
             </h1>
-            <p className="text-white/90 max-w-2xl text-base sm:text-lg">
-              Usa gli indizi per indovinare l’abito giusto. Impara, gioca ed esplora.
-            </p>
-            <div className="mt-2 flex flex-col sm:flex-row items-center gap-3 flex-wrap">
-              <a
-                role="button"
-                href="/dress-guesser"
-                className=""
-                style={{ letterSpacing: "3px" }}
-              >
-                Gioca ora
-              </a>
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex flex-col items-center justify-center gap-3">
+                <p className="text-white/90 max-w-2xl text-4xl">
+                  🇮🇹
+                </p>
+                <p className="text-white/90 max-w-2xl text-base sm:text-lg">
+                  Completa il quiz per ottenere uno sconto sull'acquisto del libro!
+                </p>
+                <a
+                  role="button"
+                  href="/dress-guesser/it"
+                  className=""
+                  style={{ letterSpacing: "3px" }}
+                >
+                  Gioca ora
+                </a>
+              </div>
+              <div className="flex flex-col items-center justify-center gap-3">
+                <p className="text-white/90 max-w-2xl text-4xl">
+                  🇬🇧
+                </p>
+                <p className="text-white/90 max-w-2xl text-base sm:text-lg">
+                  Complete the quiz to get a discount on the book!
+                </p>
+                <a
+                  role="button"
+                  href="/dress-guesser/en"
+                  className=""
+                  style={{ letterSpacing: "3px" }}
+                >
+                  Play now
+                </a>
+              </div>
             </div>
-            <div className="mt-2 flex flex-col sm:flex-row items-center gap-3 flex-wrap">
+            {/* <div className="mt-2 flex flex-col sm:flex-row items-center gap-3 flex-wrap">
               <a
                 role="button"
                 href="https://habitusfidei.art/la-mostra/" target="_blank"
@@ -42,7 +63,7 @@ export function Welcome() {
               >
                 Scopri di più
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
