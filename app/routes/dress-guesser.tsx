@@ -23,7 +23,7 @@ const MESSAGES = {
     retry: "Riprova",
     close: "Chiudi",
     completed: "Quiz Completato!",
-    alreadyWon: "Hai già completato il quiz e ottenuto il tuo sconto sull'acquisto del libro!",
+    alreadyWon: "Hai completato il quiz e ottenuto il tuo sconto sull'acquisto del libro!",
     showAtDesk: "Mostra questo risultato al banco della mostra per ottenere uno sconto sull'acquisto del libro!",
     instrTitle: "Istruzioni",
     instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) Il quiz è composto da <strong>{{numberOfQuestions}} domande</strong>: Ci sono domande a scelta multipla o domande in cui devi indovinare l'abito descritto.</li><li></br>2) Usando <strong>le frecce</strong> puoi sfogliare gli abiti: usa il pulsante <strong>\"Conferma scelta\"</strong> per selezionarne uno.</li><li></br>3) Maggiore è il numero di risposte corrette, maggiore sarà lo sconto sull'acquisto del libro che potrai ottenere!</li></ul>",
@@ -53,7 +53,7 @@ const MESSAGES = {
     retry: "Try again",
     close: "Close",
     completed: "Quiz Completed!",
-    alreadyWon: "You already completed the quiz and got your book discount!",
+    alreadyWon: "You have completed the quiz and got your book discount!",
     showAtDesk: "Show this result at the exhibition desk to redeem the book discount!",
     instrTitle: "Instructions",
     instrContent: "<ul className=\"space-y-2 text-sm\"><li>1) The quiz has <strong>{{numberOfQuestions}} questions</strong>. There are two types of questions</strong>: multiple choice questions or questions where you need to pick the correct dress.</li><li></br>2) By using <strong>the arrows</strong> you can see all the available dresses: use the <strong>\"Confirm choice\"</strong> button to select one.</li><li></br>3) The greater the number of correct answers, the bigger the discount you will earn!</li></ul>",
@@ -419,8 +419,8 @@ export default function DressGuesser() {
 
   // Check if user has already won on component mount
   useEffect(() => {
-    // const hasWon = localStorage.getItem('dress-quiz-won') === 'true';
-    const hasWon = false;
+    const hasWon = localStorage.getItem('dress-quiz-won') === 'true';
+    // const hasWon = false;
     const savedCode = localStorage.getItem('dress-quiz-code');
     setHasAlreadyWon(hasWon);
     setDiscountCode(savedCode);
